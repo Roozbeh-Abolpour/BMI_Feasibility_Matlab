@@ -53,7 +53,7 @@ while T<=tmax
         F=[F,L<=g*eye(length(L))];
     end
     for i=1:length(Bs)
-        B=Bs{i}(x,y)+Bs{i}(dx,y)+Bs{i}(x,dy);
+        B=Bs{i}(x,y)+Bs{i}(dx,y)-Bs{i}(zeros(nx,1),y)+Bs{i}(x,dy)-Bs{i}(x,zeros(ny,1));
         F=[F,B<=g*eye(length(B))];
     end
     F=[F,[-eye(nx) dx;dx' -path_radius]<=0,...
