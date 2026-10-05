@@ -9,11 +9,11 @@ while dt<=tmax
     tic
     gb=g;xb=x;
     yalmip('clear');
-    x=sdpvar(nx,1);g=sdpvar(1,1);    
-    F=[x>=lbx,x<=ubx];        
+    x=sdpvar(nx,1);g=sdpvar(1,1);temp=sdpvar(1,1);
+    F=[x>=lbx,x<=ubx,temp==0];        
     for i=1:nl
         L=Ls{i}(x,y);
-        F=[F,L<=0];
+        F=[F,L<=temp*eye(size(L,1))];
     end   
     for i=1:nb
         B=Bs{i}(x,y);
@@ -33,24 +33,24 @@ while dt<=tmax
     end
     yb=y;
     yalmip('clear');
-    y=sdpvar(ny,1);g=sdpvar(1,1);    
-    F=[y>=lby,y<=uby];        
+    y=sdpvar(ny,1);gv=sdpvar(1,1);temp=sdpvar(1,1);
+    F=[y>=lby,y<=uby,temp==0];        
     for i=1:nl
         L=Ls{i}(x,y);
-        F=[F,L<=0];
+        F=[F,L<=temp*eye(size(L,1))];    
     end 
     for i=1:nb
         B=Bs{i}(x,y);
-        F=[F,B<=g*eye(length(B))];
+        F=[F,B<=gv*eye(length(B))];
     end
     op=sdpsettings;op.verbose=0;op.solver='mosek';    
-    res=optimize(F,g,op);    
+    res=optimize(F,gv,op);        
     if res.problem~=0
         y=yb;
         dt=dt+toc;
         return
-    end
-    g=value(g);y=value(y);   
+    end    
+    g=value(gv);y=value(y);   
     if abs(g-gb)<=conv_ther||g<0        
         dt=dt+toc;
         break
