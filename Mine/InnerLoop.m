@@ -1,4 +1,4 @@
-function [x,y,g,dt]=InnerLoop(Ls,Bs,bounds,x0,y0,g0,conv_ther,tmax,nl0)
+function [x,y,g,dt]=InnerLoop(Ls,Bs,bounds,x0,y0,g0,conv_ther,tmax)
 lbx=bounds.lbx;ubx=bounds.ubx;
 lby=bounds.lby;uby=bounds.uby;
 nx=length(x0);ny=length(y0);
@@ -10,12 +10,8 @@ while dt<=tmax
     gb=g;xb=x;
     yalmip('clear');
     x=sdpvar(nx,1);g=sdpvar(1,1);    
-    F=[x>=lbx,x<=ubx];    
-    for i=1:nl0
-        L=Ls{i}(x,y);
-        F=[F,L<=g*eye(length(L))];
-    end
-    for i=nl0+1:nl
+    F=[x>=lbx,x<=ubx];        
+    for i=1:nl
         L=Ls{i}(x,y);
         F=[F,L<=0];
     end   
@@ -38,12 +34,8 @@ while dt<=tmax
     yb=y;
     yalmip('clear');
     y=sdpvar(ny,1);g=sdpvar(1,1);    
-    F=[y>=lby,y<=uby];    
-    for i=1:nl0
-        L=Ls{i}(x,y);
-        F=[F,L<=g*eye(length(L))];
-    end
-    for i=nl0+1:nl
+    F=[y>=lby,y<=uby];        
+    for i=1:nl
         L=Ls{i}(x,y);
         F=[F,L<=0];
     end 
