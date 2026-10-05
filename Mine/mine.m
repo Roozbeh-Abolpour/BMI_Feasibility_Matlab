@@ -5,7 +5,6 @@ conv_ther=params.conv_ther;
 accept_ther=params.accept_ther;
 sep_cap=params.sep_cap;
 tmax=params.tmax;
-nl0=length(Ls);
 T=0;
 tic
 x=0.5*(lbx+ubx);y=0.5*(lby+uby);g=0;
@@ -26,7 +25,7 @@ end
 T=T+toc;
 while T<=tmax    
     gb=g;
-    [xb,yb,g,dt]=InnerLoop(Ls,Bs,bounds,x,y,g,conv_ther,tmax-T,nl0);        
+    [xb,yb,g,dt]=InnerLoop(Ls,Bs,bounds,x,y,g,conv_ther,tmax-T);        
     T=T+dt;
     x=xb;y=yb;
     if g<=accept_ther||abs(g-gb)<=conv_ther        
